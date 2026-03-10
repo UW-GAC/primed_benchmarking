@@ -1,0 +1,18 @@
+# R package artifacts
+*.Rcheck/
+*.tar.gz
+.Rhistory
+.RData
+.Ruserdata
+
+# Compiled files
+*.o
+*.so
+*.dll
+
+# Documentation (auto-generated)
+docs/
+
+# vignettes
+vignettes/*.html
+vignettes/*.pdf
