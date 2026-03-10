@@ -174,7 +174,7 @@ test_that("submit_fit_haudi_workflow accepts NULL family (uses workflow default)
         avworkflow_configuration_get   = function(...) list(),
         avworkflow_configuration_update = function(config, inputs) config,
         avworkflow_run = function(config, ...) list(submissionId = "sub-null-family"),
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             result <- submit_fit_haudi_workflow(
                 method           = "HAUDI",

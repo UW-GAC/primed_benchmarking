@@ -82,7 +82,7 @@ test_that(".get_scorefile_path returns correct path", {
 
     with_mocked_bindings(
         avtable = function(...) mock_tbl,
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             result <- primedtools:::.get_scorefile_path(
                 pgs_id = "PGS000001",
@@ -105,7 +105,7 @@ test_that(".get_scorefile_path errors when pgs_id not in table", {
 
     with_mocked_bindings(
         avtable = function(...) mock_tbl,
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             expect_error(
                 primedtools:::.get_scorefile_path(
@@ -122,7 +122,7 @@ test_that(".get_scorefile_path errors when pgs_id not in table", {
 test_that(".get_scorefile_path errors when avtable call fails", {
     with_mocked_bindings(
         avtable = function(...) stop("table not found"),
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             expect_error(
                 primedtools:::.get_scorefile_path(
@@ -151,7 +151,7 @@ test_that("get_cohort_files returns pgen/psam/pvar from workspace data", {
         avworkspace_namespace = function() "test-ns",
         avworkspace_name      = function() "test-ws",
         avdata = function(...) mock_data,
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             result <- get_cohort_files()
             expect_equal(result$pgen, "gs://bucket/cohort.pgen")
@@ -172,7 +172,7 @@ test_that("get_cohort_files errors when pvar is missing", {
         avworkspace_namespace = function() "test-ns",
         avworkspace_name      = function() "test-ws",
         avdata = function(...) mock_data,
-        .package = "AnVIL",
+        .package = "AnVILGCP",
         {
             expect_error(get_cohort_files(), "workspace\\.pvar.*not found")
         }
