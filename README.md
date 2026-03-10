@@ -173,6 +173,8 @@ calc_id <- submit_calc_pgs_workflow(
 
 ## Function reference
 
+### PRIMED PGS pipeline
+
 | Function | Description |
 |----------|-------------|
 | `run_pgs_pipeline()` | Run the full PGS pipeline for a given PGS Catalog ID |
@@ -181,7 +183,17 @@ calc_id <- submit_calc_pgs_workflow(
 | `submit_calc_pgs_workflow()` | Submit the `primed_calc_pgs` workflow |
 | `wait_for_workflow()` | Poll a workflow submission until it completes |
 
+### HAUDI/GAUDI pipeline
+
+| Function | Description |
+|----------|-------------|
+| `submit_gaudi_prep_workflow()` | Submit the `gaudi_prep` workflow (VCF → PLINK2 + FLARE → .lanc) |
+| `submit_make_fbm_workflow()` | Submit the `make_fbm` workflow (.lanc + PLINK2 → FBM) |
+| `submit_fit_haudi_workflow()` | Submit the `fit_haudi` workflow (FBM + phenotype → HAUDI/GAUDI PGS model) |
+
 ## Workflows
+
+### PRIMED PGS catalog workflows
 
 This package wraps two WDL workflows from the
 [primed-pgs-catalog](https://github.com/UW-GAC/primed-pgs-catalog) repository:
@@ -192,3 +204,64 @@ This package wraps two WDL workflows from the
 - **`primed_calc_pgs`** — applies the scoring file to cohort genotype data
   (pgen/psam/pvar format) and imports individual-level scores into the
   workspace `pgs_individual_file` data table.
+
+### HAUDI/GAUDI workflows
+
+This package also wraps three WDL workflows for running the
+[HAUDI](https://github.com/frankp-0/HAUDI) and GAUDI ancestry-aware PGS methods:
+
+- **`gaudi_prep`**
+  ([github.com/UW-GAC/gaudi_prep_wdl](https://github.com/UW-GAC/gaudi_prep_wdl),
+  branch `gaudi_prep_wdl`) — converts per-chromosome VCF files to PLINK2
+  format, runs FLARE local ancestry inference, and converts FLARE output to the
+  `.lanc` format required by `make_fbm`.
+- **`make_fbm`**
+  ([github.com/frankp-0/HAUDI_workflow](https://github.com/frankp-0/HAUDI_workflow),
+  branch `main`) — converts `.lanc` local ancestry files and the matching PLINK2
+  files into a Filebacked Big Matrix (FBM) compatible with HAUDI and GAUDI.
+- **`fit_haudi`**
+  ([github.com/frankp-0/HAUDI_workflow](https://github.com/frankp-0/HAUDI_workflow),
+  branch `main`) — fits a HAUDI or GAUDI PGS model using an FBM and a phenotype
+  file; outputs ancestry-specific effect estimates and individual-level scores.
+
+#### HAUDI/GAUDI usage example
+
+```r
+library(primedtools)
+
+# Step 1 — prepare PLINK2 + .lanc files from VCF inputs
+prep_id <- submit_gaudi_prep_workflow(
+  vcf_files          = paste0("gs://my-bucket/vcf/chr", 1:22, ".vcf.gz"),
+  ref_file_list      = paste0("gs://my-bucket/ref/chr", 1:22, "REF.vcf.gz"),
+  out_prefix_list    = paste0("chr", 1:22),
+  genetic_map_file   = "gs://my-bucket/ref/genetic_map.map",
+  reference_map_file = "gs://my-bucket/ref/reference.pop"
+)
+wait_for_workflow(prep_id)
+
+# Step 2 — build the Filebacked Big Matrix
+#   (supply the .lanc and PLINK2 outputs from Step 1)
+fbm_id <- submit_make_fbm_workflow(
+  lanc_files = paste0("gs://my-bucket/lanc/chr", 1:22, ".lanc"),
+  pgen_files = paste0("gs://my-bucket/plink/chr", 1:22, ".pgen"),
+  pvar_files = paste0("gs://my-bucket/plink/chr", 1:22, ".pvar"),
+  psam_files = paste0("gs://my-bucket/plink/chr", 1:22, ".psam"),
+  fbm_prefix = "cohort",
+  anc_names  = c("AFR", "EUR")
+)
+wait_for_workflow(fbm_id)
+
+# Step 3 — fit the HAUDI/GAUDI model
+#   (supply the FBM outputs from Step 2)
+fit_id <- submit_fit_haudi_workflow(
+  method           = "HAUDI",
+  bk_file          = "gs://my-bucket/fbm/cohort.bk",
+  info_file        = "gs://my-bucket/fbm/cohort_info.txt",
+  dims_file        = "gs://my-bucket/fbm/cohort_dims.txt",
+  fbm_samples_file = "gs://my-bucket/fbm/cohort_samples.txt",
+  phenotype_file   = "gs://my-bucket/pheno/cohort.pheno",
+  phenotype        = "BMI",
+  output_prefix    = "cohort_BMI"
+)
+wait_for_workflow(fit_id)
+```
