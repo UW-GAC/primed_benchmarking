@@ -12,7 +12,13 @@ Depends:
     R (>= 4.0.0)
 Imports:
     AnVIL,
+    dplyr,
+    janitor,
     methods,
+    purrr,
+    readr,
+    stringr,
+    tidyr,
     utils
 Suggests:
     roxygen2,

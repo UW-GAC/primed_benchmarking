@@ -170,19 +170,26 @@ test_that("submit_fit_haudi_workflow errors when GAUDI is used with binomial fam
 })
 
 test_that("submit_fit_haudi_workflow accepts NULL family (uses workflow default)", {
-    # validation passes; only AnVIL API calls would fail, which we do not test here
-    expect_error(
-        submit_fit_haudi_workflow(
-            method           = "HAUDI",
-            bk_file          = "gs://b/cohort.bk",
-            info_file        = "gs://b/cohort_info.txt",
-            dims_file        = "gs://b/cohort_dims.txt",
-            fbm_samples_file = "gs://b/cohort_samples.txt",
-            phenotype_file   = "gs://b/cohort.pheno",
-            phenotype        = "BMI",
-            output_prefix    = "out",
-            family           = NULL
-        ),
-        NA  # no error expected from validation
+    with_mocked_bindings(
+        avworkflow_configuration_get   = function(...) list(),
+        avworkflow_configuration_update = function(config, inputs) config,
+        avworkflow_run = function(config, ...) list(submissionId = "sub-null-family"),
+        .package = "AnVIL",
+        {
+            result <- submit_fit_haudi_workflow(
+                method           = "HAUDI",
+                bk_file          = "gs://b/cohort.bk",
+                info_file        = "gs://b/cohort_info.txt",
+                dims_file        = "gs://b/cohort_dims.txt",
+                fbm_samples_file = "gs://b/cohort_samples.txt",
+                phenotype_file   = "gs://b/cohort.pheno",
+                phenotype        = "BMI",
+                output_prefix    = "out",
+                family           = NULL,
+                workspace_namespace = "test-ns",
+                workspace_name   = "test-ws"
+            )
+            expect_equal(result, "sub-null-family")
+        }
     )
 })
