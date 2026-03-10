@@ -31,12 +31,12 @@ remotes::install_github("UW-GAC/primed_benchmarking")
 ### Development version
 
 While the package is under active development, you can install directly from
-a specific branch:
+a specific branch, for example `initial_workspace_setup_workflow_configuration`:
 
 ```r
 # install.packages("remotes")
 remotes::install_github("UW-GAC/primed_benchmarking",
-                         ref = "copilot/create-r-package-anvil-functions")
+                         ref = "initial_workspace_setup_workflow_configuration")
 ```
 
 ### Installing from a local clone
