@@ -31,6 +31,12 @@
 #'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, the submission is skipped
+#'   when a prior successful run for \code{gaudi_prep} already exists in the
+#'   workspace, and the existing submission ID is returned instead. Default is
+#'   \code{FALSE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -47,7 +53,7 @@
 #'
 #' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
 #' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVILGCP avworkflow_run
+#' @importFrom AnVILGCP avworkflow_run avworkflow_jobs
 #' @export
 submit_gaudi_prep_workflow <- function(
     vcf_files,
@@ -58,7 +64,9 @@ submit_gaudi_prep_workflow <- function(
     samples_keep = NULL,
     workspace_namespace = avworkspace_namespace(),
     workspace_name = avworkspace_name(),
-    workflow_namespace = workspace_namespace
+    workflow_namespace = workspace_namespace,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     if (!is.character(vcf_files) || length(vcf_files) == 0) {
         stop("'vcf_files' must be a non-empty character vector")
@@ -73,6 +81,19 @@ submit_gaudi_prep_workflow <- function(
         length(vcf_files) != length(out_prefix_list)) {
         stop("'vcf_files', 'ref_file_list', and 'out_prefix_list' must all ",
              "have the same length (one entry per chromosome)")
+    }
+
+    if (skip_if_complete) {
+        existing <- .find_successful_submission(
+            "gaudi_prep",
+            namespace = workspace_namespace,
+            name = workspace_name
+        )
+        if (!is.null(existing)) {
+            message("Found prior successful gaudi_prep submission: ",
+                    existing, ". Skipping.")
+            return(existing)
+        }
     }
 
     config <- avworkflow_configuration_get(
@@ -99,7 +120,8 @@ submit_gaudi_prep_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
@@ -145,6 +167,12 @@ submit_gaudi_prep_workflow <- function(
 #'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, the submission is skipped
+#'   when a prior successful run for \code{make_fbm} already exists in the
+#'   workspace, and the existing submission ID is returned instead. Default is
+#'   \code{FALSE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -162,7 +190,7 @@ submit_gaudi_prep_workflow <- function(
 #'
 #' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
 #' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVILGCP avworkflow_run
+#' @importFrom AnVILGCP avworkflow_run avworkflow_jobs
 #' @export
 submit_make_fbm_workflow <- function(
     lanc_files,
@@ -177,7 +205,9 @@ submit_make_fbm_workflow <- function(
     chunk_size = 400L,
     workspace_namespace = avworkspace_namespace(),
     workspace_name = avworkspace_name(),
-    workflow_namespace = workspace_namespace
+    workflow_namespace = workspace_namespace,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     if (!is.character(lanc_files) || length(lanc_files) == 0) {
         stop("'lanc_files' must be a non-empty character vector")
@@ -199,6 +229,19 @@ submit_make_fbm_workflow <- function(
     }
     if (!is.character(anc_names) || length(anc_names) < 2) {
         stop("'anc_names' must be a character vector with at least two ancestry names")
+    }
+
+    if (skip_if_complete) {
+        existing <- .find_successful_submission(
+            "make_fbm",
+            namespace = workspace_namespace,
+            name = workspace_name
+        )
+        if (!is.null(existing)) {
+            message("Found prior successful make_fbm submission: ",
+                    existing, ". Skipping.")
+            return(existing)
+        }
     }
 
     config <- avworkflow_configuration_get(
@@ -233,7 +276,8 @@ submit_make_fbm_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
@@ -290,6 +334,12 @@ submit_make_fbm_workflow <- function(
 #'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, the submission is skipped
+#'   when a prior successful run for \code{fit_haudi} already exists in the
+#'   workspace, and the existing submission ID is returned instead. Default is
+#'   \code{FALSE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -309,7 +359,7 @@ submit_make_fbm_workflow <- function(
 #'
 #' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
 #' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVILGCP avworkflow_run
+#' @importFrom AnVILGCP avworkflow_run avworkflow_jobs
 #' @export
 submit_fit_haudi_workflow <- function(
     method,
@@ -329,7 +379,9 @@ submit_fit_haudi_workflow <- function(
     n_folds = 5L,
     workspace_namespace = avworkspace_namespace(),
     workspace_name = avworkspace_name(),
-    workflow_namespace = workspace_namespace
+    workflow_namespace = workspace_namespace,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     .validate_haudi_method(method)
 
@@ -341,6 +393,19 @@ submit_fit_haudi_workflow <- function(
         }
         if (method == "GAUDI" && family == "binomial") {
             stop("'binomial' family is not supported by the GAUDI method")
+        }
+    }
+
+    if (skip_if_complete) {
+        existing <- .find_successful_submission(
+            "fit_haudi",
+            namespace = workspace_namespace,
+            name = workspace_name
+        )
+        if (!is.null(existing)) {
+            message("Found prior successful fit_haudi submission: ",
+                    existing, ". Skipping.")
+            return(existing)
         }
     }
 
@@ -381,7 +446,8 @@ submit_fit_haudi_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
