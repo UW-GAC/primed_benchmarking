@@ -46,6 +46,8 @@
 #' @param timeout Numeric. Maximum number of seconds to wait for the
 #'   \code{primed_fetch_pgs_catalog} workflow to complete before timing out.
 #'   Default is \code{3600} (1 hour).
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   workflow submissions. Default is \code{TRUE}.
 #'
 #' @return A named list with two elements:
 #'   \describe{
@@ -85,7 +87,8 @@ run_pgs_pipeline <- function(
     pcs = NULL,
     primed_dataset_id = NULL,
     poll_interval = 60,
-    timeout = 3600
+    timeout = 3600,
+    use_call_cache = TRUE
 ) {
     .validate_pgs_id(pgs_id)
     .validate_genome_build(genome_build)
@@ -110,7 +113,8 @@ run_pgs_pipeline <- function(
         workspace_namespace = workspace_namespace,
         workspace_name = workspace_name,
         workflow_namespace = workflow_namespace,
-        overwrite = overwrite
+        overwrite = overwrite,
+        use_call_cache = use_call_cache
     )
     message("Submitted primed_fetch_pgs_catalog workflow: ", fetch_submission)
 
@@ -152,7 +156,8 @@ run_pgs_pipeline <- function(
         overwrite = overwrite,
         ancestry_adjust = ancestry_adjust,
         pcs = pcs,
-        primed_dataset_id = primed_dataset_id
+        primed_dataset_id = primed_dataset_id,
+        use_call_cache = use_call_cache
     )
     message("Submitted primed_calc_pgs workflow: ", calc_submission)
 
@@ -228,6 +233,8 @@ get_cohort_files <- function(
 #'   configuration. Defaults to \code{workspace_namespace}.
 #' @param overwrite Logical. Whether to overwrite existing rows in data tables.
 #'   Default is \code{FALSE}.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -256,13 +263,9 @@ submit_fetch_pgs_workflow <- function(
     workspace_namespace = avworkspace_namespace(),
     workspace_name = avworkspace_name(),
     workflow_namespace = workspace_namespace,
-    overwrite = FALSE
+    overwrite = FALSE,
+    use_call_cache = TRUE
 ) {
-    .validate_pgs_id(pgs_id)
-    .validate_genome_build(genome_build)
-
-    config <- avworkflow_configuration_get(
-        config = "primed_fetch_pgs_catalog",
         namespace = workspace_namespace,
         name = workspace_name,
         workflow_namespace = workflow_namespace,
@@ -284,7 +287,8 @@ submit_fetch_pgs_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
@@ -332,6 +336,8 @@ submit_fetch_pgs_workflow <- function(
 #'   with principal components for ancestry adjustment.
 #' @param primed_dataset_id Character or \code{NULL}. Optional PRIMED dataset
 #'   identifier.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -375,7 +381,8 @@ submit_calc_pgs_workflow <- function(
     overwrite = FALSE,
     ancestry_adjust = FALSE,
     pcs = NULL,
-    primed_dataset_id = NULL
+    primed_dataset_id = NULL,
+    use_call_cache = TRUE
 ) {
     .validate_genome_build(genome_build)
 
@@ -417,7 +424,8 @@ submit_calc_pgs_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 

@@ -218,3 +218,137 @@ test_that("run_pgs_pipeline errors when ancestry_adjust=TRUE but pcs=NULL", {
         "'pcs' must be provided"
     )
 })
+
+# Tests for submit_fetch_pgs_workflow use_call_cache --------------------------
+
+test_that("submit_fetch_pgs_workflow passes useCallCache=TRUE by default", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-fetch-default")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_fetch_pgs_workflow(
+                pgs_id = "PGS000001",
+                genome_build = "GRCh38",
+                dest_bucket = "gs://bucket",
+                model_url = "https://example.com/model.json",
+                workspace_namespace = "test-ns",
+                workspace_name = "test-ws"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-fetch-default")
+    expect_true(captured_args$useCallCache)
+})
+
+test_that("submit_fetch_pgs_workflow passes useCallCache=FALSE when requested", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-fetch-nocache")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_fetch_pgs_workflow(
+                pgs_id = "PGS000001",
+                genome_build = "GRCh38",
+                dest_bucket = "gs://bucket",
+                model_url = "https://example.com/model.json",
+                workspace_namespace = "test-ns",
+                workspace_name = "test-ws",
+                use_call_cache = FALSE
+            )
+        }
+    )
+
+    expect_equal(result, "sub-fetch-nocache")
+    expect_false(captured_args$useCallCache)
+})
+
+# Tests for submit_calc_pgs_workflow use_call_cache ---------------------------
+
+test_that("submit_calc_pgs_workflow passes useCallCache=TRUE by default", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-calc-default")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_calc_pgs_workflow(
+                pgs_model_id = "PGS000001",
+                scorefile = "gs://bucket/score.txt.gz",
+                genome_build = "GRCh38",
+                pgen = "gs://bucket/cohort.pgen",
+                psam = "gs://bucket/cohort.psam",
+                pvar = "gs://bucket/cohort.pvar",
+                min_overlap = 0.75,
+                sampleset_name = "cohort",
+                dest_bucket = "gs://bucket/results",
+                model_url = "https://example.com/model.json",
+                workspace_namespace = "test-ns",
+                workspace_name = "test-ws"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-calc-default")
+    expect_true(captured_args$useCallCache)
+})
+
+test_that("submit_calc_pgs_workflow passes useCallCache=FALSE when requested", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-calc-nocache")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_calc_pgs_workflow(
+                pgs_model_id = "PGS000001",
+                scorefile = "gs://bucket/score.txt.gz",
+                genome_build = "GRCh38",
+                pgen = "gs://bucket/cohort.pgen",
+                psam = "gs://bucket/cohort.psam",
+                pvar = "gs://bucket/cohort.pvar",
+                min_overlap = 0.75,
+                sampleset_name = "cohort",
+                dest_bucket = "gs://bucket/results",
+                model_url = "https://example.com/model.json",
+                workspace_namespace = "test-ns",
+                workspace_name = "test-ws",
+                use_call_cache = FALSE
+            )
+        }
+    )
+
+    expect_equal(result, "sub-calc-nocache")
+    expect_false(captured_args$useCallCache)
+})
