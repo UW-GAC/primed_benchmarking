@@ -59,13 +59,13 @@ devtools::install("/path/to/primed_benchmarking")
 
 ### Dependencies
 
-The package depends on the [AnVIL](https://bioconductor.org/packages/AnVIL/)
-Bioconductor package (also known as GCPAnVIL). Install it with BiocManager
+The package depends on the [AnVILGCP](https://bioconductor.org/packages/AnVILGCP/)
+Bioconductor package. Install it with BiocManager
 before installing `primedtools`:
 
 ```r
 # install.packages("BiocManager")
-BiocManager::install("AnVIL")
+BiocManager::install("AnVILGCP")
 ```
 
 ### Running the tests
@@ -99,7 +99,7 @@ workspace:
    > `chr:pos:ref:alt` without the `chr` prefix.
 
    These can be set in the Terra UI under **Data → Workspace Data**, or
-   programmatically with `AnVIL::avdata_import()`.
+   programmatically with `AnVILGCP::avdata_import()`.
 
 ## Usage
 

@@ -26,9 +26,9 @@
 #'   be present in the genotype data (e.g. \code{0.75} for 75\% overlap).
 #'   Default is \code{0.75}.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configurations in the workspace. Defaults to \code{workspace_namespace}.
 #' @param overwrite Logical. Whether to overwrite existing rows in the data
@@ -65,7 +65,7 @@
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name avtable
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name avtable
 #' @export
 run_pgs_pipeline <- function(
     pgs_id,
@@ -171,9 +171,9 @@ run_pgs_pipeline <- function(
 #' \code{workspace.psam}, and \code{workspace.pvar}.
 #'
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #'
 #' @return A named list with three character elements:
 #'   \describe{
@@ -187,7 +187,7 @@ run_pgs_pipeline <- function(
 #' cohort <- get_cohort_files()
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name avdata
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name avdata
 #' @export
 get_cohort_files <- function(
     workspace_namespace = avworkspace_namespace(),
@@ -221,9 +221,9 @@ get_cohort_files <- function(
 #'   files will be written.
 #' @param model_url Character. URL to the PRIMED PGS data model JSON file.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
 #' @param overwrite Logical. Whether to overwrite existing rows in data tables.
@@ -244,9 +244,9 @@ get_cohort_files <- function(
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name
-#' @importFrom AnVIL avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVIL avworkflow_run
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
+#' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
+#' @importFrom AnVILGCP avworkflow_run
 #' @export
 submit_fetch_pgs_workflow <- function(
     pgs_id,
@@ -319,9 +319,9 @@ submit_fetch_pgs_workflow <- function(
 #'   score files will be written.
 #' @param model_url Character. URL to the PRIMED PGS data model JSON file.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
 #' @param overwrite Logical. Whether to overwrite existing rows in data tables.
@@ -354,9 +354,9 @@ submit_fetch_pgs_workflow <- function(
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name
-#' @importFrom AnVIL avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVIL avworkflow_run
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
+#' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
+#' @importFrom AnVILGCP avworkflow_run
 #' @export
 submit_calc_pgs_workflow <- function(
     pgs_model_id,
@@ -431,9 +431,9 @@ submit_calc_pgs_workflow <- function(
 #'   \code{\link{submit_fetch_pgs_workflow}} or
 #'   \code{\link{submit_calc_pgs_workflow}}.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param poll_interval Numeric. Number of seconds to wait between status
 #'   checks. Default is \code{60}.
 #' @param timeout Numeric. Maximum number of seconds to wait before stopping
@@ -446,7 +446,7 @@ submit_calc_pgs_workflow <- function(
 #' wait_for_workflow("abc123-submission-id")
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name avworkflow_jobs
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name avworkflow_jobs
 #' @export
 wait_for_workflow <- function(
     submission_id,

@@ -5,13 +5,13 @@ Title: Tools for PRIMED Benchmarking Workflows
 Description: Functions for running PRIMED PGS (Polygenic Score) pipeline
     workflows in an AnVIL workspace. Includes tools for fetching scores from
     the PGS Catalog and calculating PGS on cohort genotype data using the
-    GCPAnVIL Bioconductor package.
+    AnVILGCP Bioconductor package.
 Author: PRIMED Consortium
 Maintainer: PRIMED Consortium <primed@uw.edu>
 Depends:
     R (>= 4.0.0)
 Imports:
-    AnVIL,
+    AnVILGCP,
     dplyr,
     janitor,
     methods,

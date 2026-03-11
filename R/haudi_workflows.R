@@ -26,9 +26,9 @@
 #'   path to a file containing sample IDs to retain in both the PLINK2
 #'   conversion and the FLARE run.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
 #'
@@ -45,9 +45,9 @@
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name
-#' @importFrom AnVIL avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVIL avworkflow_run
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
+#' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
+#' @importFrom AnVILGCP avworkflow_run
 #' @export
 submit_gaudi_prep_workflow <- function(
     vcf_files,
@@ -140,9 +140,9 @@ submit_gaudi_prep_workflow <- function(
 #' @param chunk_size Integer. Maximum number of variants to read from the
 #'   \code{.pgen} file at a time. Default is \code{400}.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
 #'
@@ -160,9 +160,9 @@ submit_gaudi_prep_workflow <- function(
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name
-#' @importFrom AnVIL avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVIL avworkflow_run
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
+#' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
+#' @importFrom AnVILGCP avworkflow_run
 #' @export
 submit_make_fbm_workflow <- function(
     lanc_files,
@@ -285,9 +285,9 @@ submit_make_fbm_workflow <- function(
 #' @param n_folds Integer. Number of cross-validation folds. Default is
 #'   \code{5}.
 #' @param workspace_namespace Character. AnVIL workspace namespace.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_namespace}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_namespace}()}.
 #' @param workspace_name Character. AnVIL workspace name.
-#'   Defaults to \code{\link[AnVIL]{avworkspace_name}()}.
+#'   Defaults to \code{\link[AnVILGCP]{avworkspace_name}()}.
 #' @param workflow_namespace Character. Namespace of the workflow method
 #'   configuration. Defaults to \code{workspace_namespace}.
 #'
@@ -307,9 +307,9 @@ submit_make_fbm_workflow <- function(
 #' )
 #' }
 #'
-#' @importFrom AnVIL avworkspace_namespace avworkspace_name
-#' @importFrom AnVIL avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVIL avworkflow_run
+#' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
+#' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
+#' @importFrom AnVILGCP avworkflow_run
 #' @export
 submit_fit_haudi_workflow <- function(
     method,
