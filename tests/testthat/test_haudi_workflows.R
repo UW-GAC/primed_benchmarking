@@ -193,3 +193,322 @@ test_that("submit_fit_haudi_workflow accepts NULL family (uses workflow default)
         }
     )
 })
+
+# ---- use_call_cache tests for haudi workflow functions ----------------------
+
+test_that("submit_gaudi_prep_workflow passes useCallCache=TRUE by default", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-gaudi-default")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_gaudi_prep_workflow(
+                vcf_files          = "gs://b/chr1.vcf.gz",
+                ref_file_list      = "gs://b/chr1REF.vcf.gz",
+                out_prefix_list    = "chr1",
+                genetic_map_file   = "gs://b/map.map",
+                reference_map_file = "gs://b/ref.pop",
+                workspace_namespace = "test-ns",
+                workspace_name      = "test-ws"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-gaudi-default")
+    expect_true(captured_args$useCallCache)
+})
+
+test_that("submit_gaudi_prep_workflow passes useCallCache=FALSE when requested", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-gaudi-nocache")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_gaudi_prep_workflow(
+                vcf_files          = "gs://b/chr1.vcf.gz",
+                ref_file_list      = "gs://b/chr1REF.vcf.gz",
+                out_prefix_list    = "chr1",
+                genetic_map_file   = "gs://b/map.map",
+                reference_map_file = "gs://b/ref.pop",
+                workspace_namespace = "test-ns",
+                workspace_name      = "test-ws",
+                use_call_cache = FALSE
+            )
+        }
+    )
+
+    expect_equal(result, "sub-gaudi-nocache")
+    expect_false(captured_args$useCallCache)
+})
+
+test_that("submit_make_fbm_workflow passes useCallCache=TRUE by default", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-fbm-default")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_make_fbm_workflow(
+                lanc_files = "gs://b/chr1.lanc",
+                pgen_files = "gs://b/chr1.pgen",
+                pvar_files = "gs://b/chr1.pvar",
+                psam_files = "gs://b/chr1.psam",
+                fbm_prefix = "cohort",
+                anc_names  = c("AFR", "EUR"),
+                workspace_namespace = "test-ns",
+                workspace_name      = "test-ws"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-fbm-default")
+    expect_true(captured_args$useCallCache)
+})
+
+test_that("submit_make_fbm_workflow passes useCallCache=FALSE when requested", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-fbm-nocache")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_make_fbm_workflow(
+                lanc_files = "gs://b/chr1.lanc",
+                pgen_files = "gs://b/chr1.pgen",
+                pvar_files = "gs://b/chr1.pvar",
+                psam_files = "gs://b/chr1.psam",
+                fbm_prefix = "cohort",
+                anc_names  = c("AFR", "EUR"),
+                workspace_namespace = "test-ns",
+                workspace_name      = "test-ws",
+                use_call_cache = FALSE
+            )
+        }
+    )
+
+    expect_equal(result, "sub-fbm-nocache")
+    expect_false(captured_args$useCallCache)
+})
+
+test_that("submit_fit_haudi_workflow passes useCallCache=TRUE by default", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-haudi-default")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_fit_haudi_workflow(
+                method           = "HAUDI",
+                bk_file          = "gs://b/cohort.bk",
+                info_file        = "gs://b/cohort_info.txt",
+                dims_file        = "gs://b/cohort_dims.txt",
+                fbm_samples_file = "gs://b/cohort_samples.txt",
+                phenotype_file   = "gs://b/cohort.pheno",
+                phenotype        = "BMI",
+                output_prefix    = "out",
+                workspace_namespace = "test-ns",
+                workspace_name   = "test-ws"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-haudi-default")
+    expect_true(captured_args$useCallCache)
+})
+
+test_that("submit_fit_haudi_workflow passes useCallCache=FALSE when requested", {
+    captured_args <- list()
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_configuration_get    = function(...) list(),
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(config, ...) {
+            captured_args <<- list(...)
+            list(submissionId = "sub-haudi-nocache")
+        },
+        .package = "AnVILGCP",
+        {
+            result <- submit_fit_haudi_workflow(
+                method           = "HAUDI",
+                bk_file          = "gs://b/cohort.bk",
+                info_file        = "gs://b/cohort_info.txt",
+                dims_file        = "gs://b/cohort_dims.txt",
+                fbm_samples_file = "gs://b/cohort_samples.txt",
+                phenotype_file   = "gs://b/cohort.pheno",
+                phenotype        = "BMI",
+                output_prefix    = "out",
+                workspace_namespace = "test-ns",
+                workspace_name   = "test-ws",
+                use_call_cache = FALSE
+            )
+        }
+    )
+
+    expect_equal(result, "sub-haudi-nocache")
+    expect_false(captured_args$useCallCache)
+})
+
+# ---- skip_if_complete tests for haudi workflow functions --------------------
+
+test_that("submit_gaudi_prep_workflow skips when prior success found", {
+    avworkflow_run_called <- FALSE
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_jobs = function(...) {
+            data.frame(
+                submissionId   = "sub-gaudi-prior",
+                status         = "Done",
+                succeeded      = 1L,
+                submissionRoot = "gs://bucket/submissions/sub-gaudi-prior/gaudi_prep/wf1",
+                stringsAsFactors = FALSE
+            )
+        },
+        avworkflow_configuration_get    = function(...) { avworkflow_run_called <<- TRUE; list() },
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(...) { avworkflow_run_called <<- TRUE; list(submissionId = "new") },
+        .package = "AnVILGCP",
+        {
+            result <- expect_message(
+                submit_gaudi_prep_workflow(
+                    vcf_files          = "gs://b/chr1.vcf.gz",
+                    ref_file_list      = "gs://b/chr1REF.vcf.gz",
+                    out_prefix_list    = "chr1",
+                    genetic_map_file   = "gs://b/map.map",
+                    reference_map_file = "gs://b/ref.pop",
+                    workspace_namespace = "test-ns",
+                    workspace_name      = "test-ws",
+                    skip_if_complete = TRUE
+                ),
+                "prior successful gaudi_prep"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-gaudi-prior")
+    expect_false(avworkflow_run_called)
+})
+
+test_that("submit_make_fbm_workflow skips when prior success found", {
+    avworkflow_run_called <- FALSE
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_jobs = function(...) {
+            data.frame(
+                submissionId   = "sub-fbm-prior",
+                status         = "Done",
+                succeeded      = 1L,
+                submissionRoot = "gs://bucket/submissions/sub-fbm-prior/make_fbm/wf1",
+                stringsAsFactors = FALSE
+            )
+        },
+        avworkflow_configuration_get    = function(...) { avworkflow_run_called <<- TRUE; list() },
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(...) { avworkflow_run_called <<- TRUE; list(submissionId = "new") },
+        .package = "AnVILGCP",
+        {
+            result <- expect_message(
+                submit_make_fbm_workflow(
+                    lanc_files = "gs://b/chr1.lanc",
+                    pgen_files = "gs://b/chr1.pgen",
+                    pvar_files = "gs://b/chr1.pvar",
+                    psam_files = "gs://b/chr1.psam",
+                    fbm_prefix = "cohort",
+                    anc_names  = c("AFR", "EUR"),
+                    workspace_namespace = "test-ns",
+                    workspace_name      = "test-ws",
+                    skip_if_complete = TRUE
+                ),
+                "prior successful make_fbm"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-fbm-prior")
+    expect_false(avworkflow_run_called)
+})
+
+test_that("submit_fit_haudi_workflow skips when prior success found", {
+    avworkflow_run_called <- FALSE
+
+    with_mocked_bindings(
+        avworkspace_namespace = function() "test-ns",
+        avworkspace_name      = function() "test-ws",
+        avworkflow_jobs = function(...) {
+            data.frame(
+                submissionId   = "sub-haudi-prior",
+                status         = "Done",
+                succeeded      = 1L,
+                submissionRoot = "gs://bucket/submissions/sub-haudi-prior/fit_haudi/wf1",
+                stringsAsFactors = FALSE
+            )
+        },
+        avworkflow_configuration_get    = function(...) { avworkflow_run_called <<- TRUE; list() },
+        avworkflow_configuration_update = function(config, ...) config,
+        avworkflow_run = function(...) { avworkflow_run_called <<- TRUE; list(submissionId = "new") },
+        .package = "AnVILGCP",
+        {
+            result <- expect_message(
+                submit_fit_haudi_workflow(
+                    method           = "HAUDI",
+                    bk_file          = "gs://b/cohort.bk",
+                    info_file        = "gs://b/cohort_info.txt",
+                    dims_file        = "gs://b/cohort_dims.txt",
+                    fbm_samples_file = "gs://b/cohort_samples.txt",
+                    phenotype_file   = "gs://b/cohort.pheno",
+                    phenotype        = "BMI",
+                    output_prefix    = "out",
+                    workspace_namespace = "test-ns",
+                    workspace_name   = "test-ws",
+                    skip_if_complete = TRUE
+                ),
+                "prior successful fit_haudi"
+            )
+        }
+    )
+
+    expect_equal(result, "sub-haudi-prior")
+    expect_false(avworkflow_run_called)
+})

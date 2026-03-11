@@ -46,6 +46,12 @@
 #' @param timeout Numeric. Maximum number of seconds to wait for the
 #'   \code{primed_fetch_pgs_catalog} workflow to complete before timing out.
 #'   Default is \code{3600} (1 hour).
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   workflow submissions. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, each workflow submission
+#'   step is skipped when a prior successful run for that workflow already
+#'   exists in the workspace, and the existing submission ID is returned
+#'   instead. Default is \code{FALSE}.
 #'
 #' @return A named list with two elements:
 #'   \describe{
@@ -85,7 +91,9 @@ run_pgs_pipeline <- function(
     pcs = NULL,
     primed_dataset_id = NULL,
     poll_interval = 60,
-    timeout = 3600
+    timeout = 3600,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     .validate_pgs_id(pgs_id)
     .validate_genome_build(genome_build)
@@ -110,7 +118,9 @@ run_pgs_pipeline <- function(
         workspace_namespace = workspace_namespace,
         workspace_name = workspace_name,
         workflow_namespace = workflow_namespace,
-        overwrite = overwrite
+        overwrite = overwrite,
+        use_call_cache = use_call_cache,
+        skip_if_complete = skip_if_complete
     )
     message("Submitted primed_fetch_pgs_catalog workflow: ", fetch_submission)
 
@@ -152,7 +162,9 @@ run_pgs_pipeline <- function(
         overwrite = overwrite,
         ancestry_adjust = ancestry_adjust,
         pcs = pcs,
-        primed_dataset_id = primed_dataset_id
+        primed_dataset_id = primed_dataset_id,
+        use_call_cache = use_call_cache,
+        skip_if_complete = skip_if_complete
     )
     message("Submitted primed_calc_pgs workflow: ", calc_submission)
 
@@ -228,6 +240,12 @@ get_cohort_files <- function(
 #'   configuration. Defaults to \code{workspace_namespace}.
 #' @param overwrite Logical. Whether to overwrite existing rows in data tables.
 #'   Default is \code{FALSE}.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, the submission is skipped
+#'   when a prior successful run for \code{primed_fetch_pgs_catalog} already
+#'   exists in the workspace, and the existing submission ID is returned
+#'   instead. Default is \code{FALSE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -246,7 +264,7 @@ get_cohort_files <- function(
 #'
 #' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
 #' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVILGCP avworkflow_run
+#' @importFrom AnVILGCP avworkflow_run avworkflow_jobs
 #' @export
 submit_fetch_pgs_workflow <- function(
     pgs_id,
@@ -256,10 +274,25 @@ submit_fetch_pgs_workflow <- function(
     workspace_namespace = avworkspace_namespace(),
     workspace_name = avworkspace_name(),
     workflow_namespace = workspace_namespace,
-    overwrite = FALSE
+    overwrite = FALSE,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     .validate_pgs_id(pgs_id)
     .validate_genome_build(genome_build)
+
+    if (skip_if_complete) {
+        existing <- .find_successful_submission(
+            "primed_fetch_pgs_catalog",
+            namespace = workspace_namespace,
+            name = workspace_name
+        )
+        if (!is.null(existing)) {
+            message("Found prior successful primed_fetch_pgs_catalog ",
+                    "submission: ", existing, ". Skipping.")
+            return(existing)
+        }
+    }
 
     config <- avworkflow_configuration_get(
         config = "primed_fetch_pgs_catalog",
@@ -284,7 +317,8 @@ submit_fetch_pgs_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
@@ -332,6 +366,12 @@ submit_fetch_pgs_workflow <- function(
 #'   with principal components for ancestry adjustment.
 #' @param primed_dataset_id Character or \code{NULL}. Optional PRIMED dataset
 #'   identifier.
+#' @param use_call_cache Logical. Whether to enable Cromwell call caching for
+#'   the workflow submission. Default is \code{TRUE}.
+#' @param skip_if_complete Logical. If \code{TRUE}, the submission is skipped
+#'   when a prior successful run for \code{primed_calc_pgs} already exists in
+#'   the workspace, and the existing submission ID is returned instead.
+#'   Default is \code{FALSE}.
 #'
 #' @return Character. The submission ID of the workflow run.
 #'
@@ -356,7 +396,7 @@ submit_fetch_pgs_workflow <- function(
 #'
 #' @importFrom AnVILGCP avworkspace_namespace avworkspace_name
 #' @importFrom AnVILGCP avworkflow_configuration_get avworkflow_configuration_update
-#' @importFrom AnVILGCP avworkflow_run
+#' @importFrom AnVILGCP avworkflow_run avworkflow_jobs
 #' @export
 submit_calc_pgs_workflow <- function(
     pgs_model_id,
@@ -375,9 +415,24 @@ submit_calc_pgs_workflow <- function(
     overwrite = FALSE,
     ancestry_adjust = FALSE,
     pcs = NULL,
-    primed_dataset_id = NULL
+    primed_dataset_id = NULL,
+    use_call_cache = TRUE,
+    skip_if_complete = FALSE
 ) {
     .validate_genome_build(genome_build)
+
+    if (skip_if_complete) {
+        existing <- .find_successful_submission(
+            "primed_calc_pgs",
+            namespace = workspace_namespace,
+            name = workspace_name
+        )
+        if (!is.null(existing)) {
+            message("Found prior successful primed_calc_pgs submission: ",
+                    existing, ". Skipping.")
+            return(existing)
+        }
+    }
 
     config <- avworkflow_configuration_get(
         config = "primed_calc_pgs",
@@ -417,7 +472,8 @@ submit_calc_pgs_workflow <- function(
     result <- avworkflow_run(config,
                              namespace = workspace_namespace,
                              name = workspace_name,
-                             submit = TRUE)
+                             submit = TRUE,
+                             useCallCache = use_call_cache)
     result$submissionId
 }
 
@@ -492,6 +548,36 @@ wait_for_workflow <- function(
 
 
 # ---- Internal helpers --------------------------------------------------------
+
+#' @keywords internal
+.find_successful_submission <- function(workflow_name, namespace, name) {
+    jobs <- tryCatch(
+        avworkflow_jobs(namespace = namespace, name = name),
+        error = function(e) NULL
+    )
+    if (is.null(jobs) || nrow(jobs) == 0) return(NULL)
+
+    # Filter for submissions that completed with at least one success
+    done <- jobs[jobs$status == "Done" & jobs$succeeded > 0, ]
+    if (nrow(done) == 0) return(NULL)
+
+    # Identify workflow name from submissionRoot path.
+    # Terra submissionRoot format: gs://BUCKET/submissions/SUBMISSIONID/WORKFLOW/...
+    workflow_names <- vapply(done$submissionRoot, function(root) {
+        # Strip the gs://BUCKET/ prefix then split on "/"
+        path <- sub("^gs://[^/]+/", "", root)
+        parts <- strsplit(path, "/")[[1]]
+        # parts[1] = "submissions", parts[2] = submissionId, parts[3] = workflowName
+        if (length(parts) >= 3 && parts[1] == "submissions") parts[3] else NA_character_
+    }, character(1))
+
+    matching <- done[!is.na(workflow_names) & workflow_names == workflow_name, ]
+    if (nrow(matching) == 0) return(NULL)
+
+    # Return most recent match (avworkflow_jobs sorts by submissionDate desc)
+    matching$submissionId[1]
+}
+
 
 #' @keywords internal
 .validate_pgs_id <- function(pgs_id) {
