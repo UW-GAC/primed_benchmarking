@@ -1,4 +1,4 @@
 library(testthat)
-library(primedtools)
+library(primed_benchmarking)
 
-test_check("primedtools")
+test_check("primed_benchmarking")
