@@ -23,49 +23,49 @@ make_raw_tibble <- function(text, split_list_columns = FALSE) {
 # ---- .is_numeric_col --------------------------------------------------------
 
 test_that(".is_numeric_col returns TRUE for all-numeric vectors", {
-    expect_true(primedtools:::.is_numeric_col(c("1", "2.5", "-3", "1e4")))
-    expect_true(primedtools:::.is_numeric_col(c("0", "100")))
+    expect_true(primed_benchmarking:::.is_numeric_col(c("1", "2.5", "-3", "1e4")))
+    expect_true(primed_benchmarking:::.is_numeric_col(c("0", "100")))
 })
 
 test_that(".is_numeric_col returns FALSE when any value is non-numeric", {
-    expect_false(primedtools:::.is_numeric_col(c("1", "abc")))
-    expect_false(primedtools:::.is_numeric_col(c("1.5", "2019-01-01")))
+    expect_false(:::.is_numeric_col(c("1", "abc")))
+    expect_false(:::.is_numeric_col(c("1.5", "2019-01-01")))
 })
 
 test_that(".is_numeric_col returns FALSE for all-NA input", {
-    expect_false(primedtools:::.is_numeric_col(c(NA_character_, NA_character_)))
+    expect_false(:::.is_numeric_col(c(NA_character_, NA_character_)))
 })
 
 # ---- .is_date_col -----------------------------------------------------------
 
 test_that(".is_date_col returns TRUE for YYYY-MM-DD vectors", {
-    expect_true(primedtools:::.is_date_col(c("2020-01-15", "2023-12-31")))
+    expect_true(primed_benchmarking:::.is_date_col(c("2020-01-15", "2023-12-31")))
 })
 
 test_that(".is_date_col returns FALSE for non-date patterns", {
-    expect_false(primedtools:::.is_date_col(c("01/15/2020", "Jan 2020")))
-    expect_false(primedtools:::.is_date_col(c("1", "2")))
+    expect_false(primed_benchmarking:::.is_date_col(c("01/15/2020", "Jan 2020")))
+    expect_false(primed_benchmarking:::.is_date_col(c("1", "2")))
 })
 
 test_that(".is_date_col returns FALSE for all-NA input", {
-    expect_false(primedtools:::.is_date_col(NA_character_))
+    expect_false(primed_benchmarking:::.is_date_col(NA_character_))
 })
 
 # ---- .is_listlike_col -------------------------------------------------------
 
 test_that(".is_listlike_col returns TRUE when >= 10% of values have delimiters", {
     # 5/5 = 100% pipe-separated
-    expect_true(primedtools:::.is_listlike_col(c("a|b", "c|d", "e", "f|g", "h|i")))
+    expect_true(primed_benchmarking:::.is_listlike_col(c("a|b", "c|d", "e", "f|g", "h|i")))
 })
 
 test_that(".is_listlike_col returns FALSE when few values contain delimiters", {
     # 0% have delimiters
-    expect_false(primedtools:::.is_listlike_col(c("apple", "banana", "cherry")))
+    expect_false(primed_benchmarking:::.is_listlike_col(c("apple", "banana", "cherry")))
 })
 
 test_that(".is_listlike_col returns FALSE for empty / all-NA input", {
-    expect_false(primedtools:::.is_listlike_col(character(0)))
-    expect_false(primedtools:::.is_listlike_col(c(NA_character_, NA_character_)))
+    expect_false(primed_benchmarking:::.is_listlike_col(character(0)))
+    expect_false(primed_benchmarking:::.is_listlike_col(c(NA_character_, NA_character_)))
 })
 
 # ---- Column name cleaning ---------------------------------------------------
@@ -104,37 +104,37 @@ test_that("whitespace is trimmed from character columns", {
 # ---- Numeric conversion (via helper) ----------------------------------------
 
 test_that(".is_numeric_col handles positive integers and floats", {
-    expect_true(primedtools:::.is_numeric_col(c("1", "2", "3")))
-    expect_true(primedtools:::.is_numeric_col(c("1.5", "2.0")))
+    expect_true(primed_benchmarking:::.is_numeric_col(c("1", "2", "3")))
+    expect_true(primed_benchmarking:::.is_numeric_col(c("1.5", "2.0")))
 })
 
 test_that(".is_numeric_col rejects mixed numeric/text column", {
-    expect_false(primedtools:::.is_numeric_col(c("1", "two")))
+    expect_false(primed_benchmarking:::.is_numeric_col(c("1", "two")))
 })
 
 # ---- Date conversion (via helper) -------------------------------------------
 
 test_that(".is_date_col accepts standard ISO dates", {
-    expect_true(primedtools:::.is_date_col(c("2021-06-01", "2022-11-30")))
+    expect_true(primed_benchmarking:::.is_date_col(c("2021-06-01", "2022-11-30")))
 })
 
 test_that(".is_date_col rejects non-ISO date strings", {
-    expect_false(primedtools:::.is_date_col(c("06/01/2021")))
+    expect_false(primed_benchmarking:::.is_date_col(c("06/01/2021")))
 })
 
 # ---- split_list_columns parameter -------------------------------------------
 
 test_that(".is_listlike_col detects pipe-separated values", {
     x <- c("AFR|EUR", "AMR|EAS", "EUR", "AFR|AMR|EUR", "SAS")
-    expect_true(primedtools:::.is_listlike_col(x))
+    expect_true(primed_benchmarking:::.is_listlike_col(x))
 })
 
 test_that(".is_listlike_col detects semicolon-separated values", {
     x <- c("a;b", "c;d", "e")
-    expect_true(primedtools:::.is_listlike_col(x))
+    expect_true(primed_benchmarking:::.is_listlike_col(x))
 })
 
 test_that(".is_listlike_col detects comma-space-separated values", {
     x <- c("a, b, c", "d, e", "f")
-    expect_true(primedtools:::.is_listlike_col(x))
+    expect_true(primed_benchmarking:::.is_listlike_col(x))
 })
