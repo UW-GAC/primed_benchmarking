@@ -3,18 +3,18 @@ context("HAUDI/GAUDI workflow submission and validation")
 # ---- .validate_haudi_method -------------------------------------------------
 
 test_that(".validate_haudi_method accepts valid methods", {
-    expect_silent(primedtools:::.validate_haudi_method("HAUDI"))
-    expect_silent(primedtools:::.validate_haudi_method("GAUDI"))
+    expect_silent(primed_benchmarking:::.validate_haudi_method("HAUDI"))
+    expect_silent(primed_benchmarking:::.validate_haudi_method("GAUDI"))
 })
 
 test_that(".validate_haudi_method rejects invalid methods", {
-    expect_error(primedtools:::.validate_haudi_method("haudi"),
+    expect_error(primed_benchmarking:::.validate_haudi_method("haudi"),
                  "must be one of")
-    expect_error(primedtools:::.validate_haudi_method("BOTH"),
+    expect_error(primed_benchmarking:::.validate_haudi_method("BOTH"),
                  "must be one of")
-    expect_error(primedtools:::.validate_haudi_method(1),
+    expect_error(primed_benchmarking:::.validate_haudi_method(1),
                  "must be one of")
-    expect_error(primedtools:::.validate_haudi_method(character(0)),
+    expect_error(primed_benchmarking:::.validate_haudi_method(character(0)),
                  "must be one of")
 })
 
