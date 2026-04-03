@@ -106,7 +106,7 @@ workspace:
 ### Run the full PGS pipeline
 
 ```r
-library(primedtools)
+library(primed_benchmarking)
 
 result <- run_pgs_pipeline(
   pgs_id         = "PGS000001",
