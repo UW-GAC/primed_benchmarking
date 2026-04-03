@@ -3,39 +3,39 @@ context("PGS pipeline validation and helper functions")
 # Tests for .validate_pgs_id -------------------------------------------------
 
 test_that(".validate_pgs_id accepts valid IDs", {
-    expect_silent(primedtools:::.validate_pgs_id("PGS000001"))
-    expect_silent(primedtools:::.validate_pgs_id("PGS999999"))
-    expect_silent(primedtools:::.validate_pgs_id("PGS000123"))
+    expect_silent(primed_benchmarking:::.validate_pgs_id("PGS000001"))
+    expect_silent(primed_benchmarking:::.validate_pgs_id("PGS999999"))
+    expect_silent(primed_benchmarking:::.validate_pgs_id("PGS000123"))
 })
 
 test_that(".validate_pgs_id rejects invalid IDs", {
-    expect_error(primedtools:::.validate_pgs_id("pgs000001"),
+    expect_error(primed_benchmarking:::.validate_pgs_id("pgs000001"),
                  "must match the format")
-    expect_error(primedtools:::.validate_pgs_id("PGS0001"),
+    expect_error(primed_benchmarking:::.validate_pgs_id("PGS0001"),
                  "must match the format")
-    expect_error(primedtools:::.validate_pgs_id("PGS0000001"),
+    expect_error(primed_benchmarking:::.validate_pgs_id("PGS0000001"),
                  "must match the format")
-    expect_error(primedtools:::.validate_pgs_id(""),
+    expect_error(primed_benchmarking:::.validate_pgs_id(""),
                  "non-empty character string")
-    expect_error(primedtools:::.validate_pgs_id(123),
+    expect_error(primed_benchmarking:::.validate_pgs_id(123),
                  "non-empty character string")
-    expect_error(primedtools:::.validate_pgs_id(character(0)),
+    expect_error(primed_benchmarking:::.validate_pgs_id(character(0)),
                  "non-empty character string")
 })
 
 # Tests for .validate_genome_build -------------------------------------------
 
 test_that(".validate_genome_build accepts valid builds", {
-    expect_silent(primedtools:::.validate_genome_build("GRCh38"))
-    expect_silent(primedtools:::.validate_genome_build("GRCh37"))
+    expect_silent(primed_benchmarking:::.validate_genome_build("GRCh38"))
+    expect_silent(primed_benchmarking:::.validate_genome_build("GRCh37"))
 })
 
 test_that(".validate_genome_build rejects invalid builds", {
-    expect_error(primedtools:::.validate_genome_build("hg38"),
+    expect_error(primed_benchmarking:::.validate_genome_build("hg38"),
                  "must be one of")
-    expect_error(primedtools:::.validate_genome_build("GRCh36"),
+    expect_error(primed_benchmarking:::.validate_genome_build("GRCh36"),
                  "must be one of")
-    expect_error(primedtools:::.validate_genome_build("grch38"),
+    expect_error(primed_benchmarking:::.validate_genome_build("grch38"),
                  "must be one of")
 })
 
@@ -50,11 +50,11 @@ test_that(".get_workspace_attr retrieves existing attribute", {
                   "something_else"),
         stringsAsFactors = FALSE
     )
-    expect_equal(primedtools:::.get_workspace_attr(data, "pgen"),
+    expect_equal(primed_benchmarking:::.get_workspace_attr(data, "pgen"),
                  "gs://bucket/cohort.pgen")
-    expect_equal(primedtools:::.get_workspace_attr(data, "psam"),
+    expect_equal(primed_benchmarking:::.get_workspace_attr(data, "psam"),
                  "gs://bucket/cohort.psam")
-    expect_equal(primedtools:::.get_workspace_attr(data, "pvar"),
+    expect_equal(primed_benchmarking:::.get_workspace_attr(data, "pvar"),
                  "gs://bucket/cohort.pvar")
 })
 
@@ -64,7 +64,7 @@ test_that(".get_workspace_attr errors when attribute missing", {
         value = c("gs://bucket/cohort.psam", "gs://bucket/cohort.pvar"),
         stringsAsFactors = FALSE
     )
-    expect_error(primedtools:::.get_workspace_attr(data, "pgen"),
+    expect_error(primed_benchmarking:::.get_workspace_attr(data, "pgen"),
                  "workspace\\.pgen.*not found")
 })
 
@@ -84,7 +84,7 @@ test_that(".get_scorefile_path returns correct path", {
         avtable = function(...) mock_tbl,
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.get_scorefile_path(
+            result <- primed_benchmarking:::.get_scorefile_path(
                 pgs_id = "PGS000001",
                 workspace_namespace = "test-ns",
                 workspace_name = "test-ws"
@@ -108,7 +108,7 @@ test_that(".get_scorefile_path errors when pgs_id not in table", {
         .package = "AnVILGCP",
         {
             expect_error(
-                primedtools:::.get_scorefile_path(
+                primed_benchmarking:::.get_scorefile_path(
                     pgs_id = "PGS000001",
                     workspace_namespace = "test-ns",
                     workspace_name = "test-ws"
@@ -125,7 +125,7 @@ test_that(".get_scorefile_path errors when avtable call fails", {
         .package = "AnVILGCP",
         {
             expect_error(
-                primedtools:::.get_scorefile_path(
+                primed_benchmarking:::.get_scorefile_path(
                     pgs_id = "PGS000001",
                     workspace_namespace = "test-ns",
                     workspace_name = "test-ws"
@@ -368,7 +368,7 @@ test_that(".find_successful_submission returns NULL when no jobs exist", {
         },
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
@@ -394,7 +394,7 @@ test_that(".find_successful_submission returns NULL when no Done+succeeded jobs"
         },
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
@@ -417,7 +417,7 @@ test_that(".find_successful_submission returns NULL when workflow name does not 
         },
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
@@ -440,7 +440,7 @@ test_that(".find_successful_submission returns NULL when submissionRoot path is 
         },
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
@@ -466,7 +466,7 @@ test_that(".find_successful_submission returns most recent matching submission",
         },
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
@@ -482,7 +482,7 @@ test_that(".find_successful_submission returns NULL when avworkflow_jobs errors"
         avworkflow_jobs = function(...) stop("not in workspace"),
         .package = "AnVILGCP",
         {
-            result <- primedtools:::.find_successful_submission(
+            result <- primed_benchmarking:::.find_successful_submission(
                 "primed_fetch_pgs_catalog",
                 namespace = "test-ns",
                 name = "test-ws"
