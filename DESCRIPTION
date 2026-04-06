@@ -18,6 +18,7 @@ Imports:
     purrr,
     readr,
     stringr,
+    tibble,
     tidyr,
     utils
 Suggests:
