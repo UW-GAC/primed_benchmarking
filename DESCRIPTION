@@ -1,4 +1,4 @@
-Package: primed_benchmarking
+Package: primed.benchmarking
 Version: 0.1.0
 Type: Package
 Title: Tools for PRIMED Benchmarking Workflows
