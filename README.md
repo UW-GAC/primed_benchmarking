@@ -25,7 +25,7 @@ Once the package is published, install it from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("UW-GAC/primed_benchmarking")
+remotes::install_github("UW-GAC/primed.benchmarking")
 ```
 
 ### Development version
@@ -35,7 +35,7 @@ a specific branch, for example `initial_workspace_setup_workflow_configuration`:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("UW-GAC/primed_benchmarking",
+remotes::install_github("UW-GAC/primed.benchmarking",
                          ref = "initial_workspace_setup_workflow_configuration")
 ```
 
@@ -46,7 +46,7 @@ changes (for example, while developing or testing), use `devtools`:
 
 ```r
 # install.packages("devtools")
-devtools::load_all("/path/to/primed_benchmarking")
+devtools::load_all("/path/to/primed.benchmarking")
 ```
 
 `load_all()` sources all R files in `R/` into your session without fully
@@ -54,7 +54,7 @@ building the package, which makes the edit-test cycle faster. To do a full
 local install instead, use:
 
 ```r
-devtools::install("/path/to/primed_benchmarking")
+devtools::install("/path/to/primed.benchmarking")
 ```
 
 ### Dependencies
@@ -75,7 +75,7 @@ from a local clone:
 
 ```r
 # install.packages("devtools")
-devtools::test("/path/to/primed_benchmarking")
+devtools::test("/path/to/primed.benchmarking")
 ```
 
 ## Prerequisites
@@ -106,7 +106,7 @@ workspace:
 ### Run the full PGS pipeline
 
 ```r
-library(primed_benchmarking)
+library(primed.benchmarking)
 
 result <- run_pgs_pipeline(
   pgs_id         = "PGS000001",
