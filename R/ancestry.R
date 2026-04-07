@@ -100,6 +100,14 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
 
         two_way      <- (x1 >= min_prop) & (x2 >= min_prop) &
                             (x1 + x2 >= threshold)
+
+        if(sum(two_way)>100) {
+          print(paste("Count of two_way for",pairs$Ref1[i],"and",pairs$Ref2[i]," is ",sum(two_way)))
+          print(paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"))
+          write_delim(admixture_anc_prop_list %>% filter(two_way) %>% select(ID),
+                      file=paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"))
+          }
+      
         # x1 < min_prop and x2 < threshold, but their sum still reaches
         # threshold (intermediate state: Ref1 very low, Ref2 moderate-high)
         exclude_ref1 <- (x1 < min_prop)  & (x2 < threshold) &
@@ -117,6 +125,12 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
         mono_ref2    <- (x1 >= threshold) & (x2 < min_prop)  &
                             (x1 + x2 >= threshold)
         total        <- (x1 + x2 >= threshold)
+        if(sum(total)>100) {
+          print(paste("Count of total n for",pairs$Ref1[i],"and",pairs$Ref2[i]," is ",sum(total)))
+          print(paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
+          write_delim(admixture_anc_prop_list %>% filter(total) %>% select(ID),
+                      file=paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
+          }
 
         out_list[[i]] <- tibble::tibble(
             Cohort                           = cohort_name,
