@@ -1,4 +1,4 @@
-# primed_benchmarking
+# primed.benchmarking
 
 R package with tools for running PRIMED PGS (Polygenic Score) benchmarking
 workflows in an AnVIL/Terra workspace.
