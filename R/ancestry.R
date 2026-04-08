@@ -129,7 +129,7 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
           print(paste("Count of total n for",pairs$Ref1[i],"and",pairs$Ref2[i]," is ",sum(total)))
           print(paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
           write_delim(admixture_anc_prop_list %>% filter(total) %>% select(ID),
-                      file=paste0("cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
+                      file=paste0(cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
           }
 
         out_list[[i]] <- tibble::tibble(
