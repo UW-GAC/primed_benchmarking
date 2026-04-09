@@ -1,0 +1,30 @@
+Package: primed.benchmarking
+Version: 0.1.0
+Type: Package
+Title: Tools for PRIMED Benchmarking Workflows
+Description: Functions for running PRIMED PGS (Polygenic Score) pipeline
+    workflows in an AnVIL workspace. Includes tools for fetching scores from
+    the PGS Catalog and calculating PGS on cohort genotype data using the
+    AnVILGCP Bioconductor package.
+Author: PRIMED Consortium
+Maintainer: PRIMED Consortium <primed@uw.edu>
+Depends:
+    R (>= 4.0.0)
+Imports:
+    AnVILGCP,
+    dplyr,
+    janitor,
+    methods,
+    purrr,
+    readr,
+    stringr,
+    tibble,
+    tidyr,
+    utils
+Suggests:
+    roxygen2,
+    testthat,
+    mockery
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
