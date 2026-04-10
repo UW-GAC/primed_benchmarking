@@ -129,13 +129,13 @@ set_up_step1c_summarize_local_ancestry_proportions <- function(
             paste0("\"", merged.6.ancestry_frac_path, "\""),
             .data$attribute
         )
-    )
+    ) 
     inputs <- dplyr::mutate(
         inputs,
         attribute = ifelse(
             .data$name == "run_notebook_workflow.github_raw_url_notebook_file",
             paste0("\"https://raw.githubusercontent.com/UW-GAC/primed_benchmarking/",
-                   "refs/heads/initial_workspace_setup_workflow_configuration/",
+                   "refs/heads/main/",
                    "notebook_templates/",
                    "summarize_local_ancestry_proportions.ipynb\""),
             .data$attribute
