@@ -172,8 +172,8 @@ set_up_step1c_summarize_local_ancestry_proportions <- function(
     outputs <- dplyr::mutate(
         outputs,
         attribute = ifelse(
-            .data$name == "run_notebook_workflow.two_way_proportion_IDs",
-            "this.two_way_proportion_IDs",
+            .data$name == "run_notebook_workflow.ancestry_proportion_IDs",
+            "this.ancestry_proportion_IDs",
             .data$attribute
         )
     )
