@@ -105,7 +105,7 @@ set_up_step1c_summarize_local_ancestry_proportions <- function(
     merged.6.ancestry_frac_path
 ) {
     config <- AnVILGCP::avworkflow_configuration_get(
-        workflow_namespace = "primed_benchmarking",
+        workflow_namespace = "primed_analysis",
         workflow_name      = "step1c_summarize_local_ancestry_proportions",
         namespace          = cohort.namespace,
         name               = cohort.name
