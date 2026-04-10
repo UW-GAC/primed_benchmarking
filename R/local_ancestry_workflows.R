@@ -221,10 +221,6 @@ set_up_step1c_summarize_local_ancestry_proportions <- function(
 #' @param cohort Character scalar. The entity name to run on.
 #' @param cohort.namespace Character scalar. AnVIL workspace namespace.
 #' @param cohort.name Character scalar. AnVIL workspace name.
-#' @param merged.6.ancestry_frac_path Character scalar. (Retained for API
-#'   symmetry with
-#'   \code{\link{set_up_step1c_summarize_local_ancestry_proportions}}; not used
-#'   directly by this function.)
 #' @param run_now Logical scalar. If \code{TRUE}, apply the configuration and
 #'   submit the workflow. Default is \code{FALSE}.
 #' @param new_config A workflow configuration object previously returned by
@@ -237,14 +233,12 @@ set_up_step1c_summarize_local_ancestry_proportions <- function(
 #' new_config <- set_up_step1c_summarize_local_ancestry_proportions(
 #'   cohort                    = "MY_COHORT",
 #'   cohort.namespace          = "my-namespace",
-#'   cohort.name               = "my-workspace",
-#'   merged.6.ancestry_frac_path = "gs://my-bucket/merged_6anc_frac.tsv"
+#'   cohort.name               = "my-workspace"
 #' )
 #' run_step1c_summarize_local_ancestry_proportions(
 #'   cohort                    = "MY_COHORT",
 #'   cohort.namespace          = "my-namespace",
 #'   cohort.name               = "my-workspace",
-#'   merged.6.ancestry_frac_path = "gs://my-bucket/merged_6anc_frac.tsv",
 #'   run_now                   = TRUE,
 #'   new_config                = new_config
 #' )
@@ -256,7 +250,6 @@ run_step1c_summarize_local_ancestry_proportions <- function(
     cohort,
     cohort.namespace,
     cohort.name,
-    merged.6.ancestry_frac_path,
     run_now    = FALSE,
     new_config
 ) {
