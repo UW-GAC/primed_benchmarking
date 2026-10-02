@@ -103,9 +103,9 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
 
         if(sum(two_way)>100) {
           print(paste("Count of two_way for",pairs$Ref1[i],"and",pairs$Ref2[i]," is ",sum(two_way)))
-          print(paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"))
+          print(paste0("Writing file: ", cohort_name,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"))
           write_delim(admixture_anc_prop_list %>% filter(two_way) %>% select(ID),
-                      file=paste0(cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"),
+                      file=paste0(cohort_name,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_two_way_anc.prop_IDs.txt"),
                       col_names=FALSE)
           }
       
@@ -128,9 +128,9 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
         total        <- (x1 + x2 >= threshold)
         if(sum(total)>100) {
           print(paste("Count of total n for",pairs$Ref1[i],"and",pairs$Ref2[i]," is ",sum(total)))
-          print(paste0("Writing file: ", cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
+          print(paste0("Writing file: ", cohort_name,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"))
           write_delim(admixture_anc_prop_list %>% filter(total) %>% select(ID),
-                      file=paste0(cohort,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"),
+                      file=paste0(cohort_name,"_",pairs$Ref1[i],"_",pairs$Ref2[i],"_total_n_anc.prop_IDs.txt"),
                      col_names=FALSE)
           }
 
@@ -147,6 +147,6 @@ get_two_way_ancestry <- function(admixture_anc_prop_list,
         )
     }
     print("Verifying files were written:")
-    print(list.files(pattern=".anc.prop_IDs.txt"))
+    print(list.files(pattern=cohort_name))
     dplyr::bind_rows(out_list)
 }
