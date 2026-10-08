@@ -1,0 +1,18 @@
+# Hand-written (no roxygen needed); keep in sync with R/ if you add exports.
+export(run_combine_and_compare)
+export(fetch_pgs_catalog_metadata)
+export(run_join_and_plot)
+export(run_compare_populations)
+export(default_bucket_dir)
+export(sync_from_bucket)
+export(sync_to_bucket)
+export(clear_pgs_local_files)
+export(default_metric_comparisons)
+export(default_catalog_comparisons)
+import(data.table)
+importFrom(rlang, .data)
+importFrom(ggplot2, ggplot, aes, geom_errorbar, geom_errorbarh, geom_point, geom_smooth,
+           geom_boxplot, geom_jitter, geom_abline, geom_line, geom_histogram, geom_vline,
+           geom_hline, scale_x_discrete, scale_y_log10, coord_flip, coord_equal,
+           coord_cartesian, facet_wrap, labs, theme_minimal, theme, element_text,
+           position_dodge, ggsave)

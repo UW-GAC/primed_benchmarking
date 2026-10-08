@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+pgs_comparison_results/
+pgs_sscore_files/
+*.rds

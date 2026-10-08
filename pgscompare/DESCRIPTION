@@ -1,0 +1,29 @@
+Package: pgscompare
+Type: Package
+Title: Combine, Evaluate and Compare Many Polygenic Scores on AnVIL/Terra
+Version: 0.1.0
+Authors@R: person("Your", "Name", email = "msethpeacock@gmail.com", role = c("aut", "cre"))
+Description: Reads a Terra data table of per-PGS score files (raw plink2 .sscore
+    and ancestry-adjusted), merges them with phenotypes, evaluates every score
+    with 'pgsmetrics' (plus a per-SD odds ratio), enriches results with PGS
+    Catalog metadata and reported performance, and produces comparison plots
+    (metrics vs. ancestry / sample size / variants / match rate, adjusted vs.
+    raw, yours vs. PGS Catalog, odds-ratio summaries, population vs.
+    sub-population).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports:
+    data.table,
+    ggplot2,
+    httr,
+    jsonlite,
+    rlang,
+    stats,
+    tools,
+    utils
+Suggests:
+    pgsmetrics,
+    AnVIL,
+    AnVILGCP
+Remotes: krillinor/pgsmetrics
