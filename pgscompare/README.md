@@ -11,14 +11,14 @@ packages are loaded can trigger the "cannot be unloaded" error):
 
 ```r
 install.packages("remotes")
-remotes::install_github("YOUR-GITHUB-USER/pgscompare")
+remotes::install_github("UW-GAC/primed_benchmarking", subdir = "pgscompare")
 
 # pgsmetrics is not on CRAN; install it separately (and keep upgrade = "never"):
 remotes::install_github("krillinor/pgsmetrics", upgrade = "never")
 ```
 
 Private repo? Create a GitHub token and use
-`remotes::install_github("YOUR-GITHUB-USER/pgscompare", auth_token = Sys.getenv("GITHUB_PAT"))`.
+`remotes::install_github("UW-GAC/primed_benchmarking", subdir = "pgscompare", auth_token = Sys.getenv("GITHUB_PAT"))`.
 To pick up changes later, reinstall (add `force = TRUE`) and restart R.
 `AnVIL`/`AnVILGCP` are only needed to read the Terra data table; they are already on
 Terra images (or pass `pgs_table =` a data.frame).
@@ -67,6 +67,8 @@ Every function documents its arguments (`?run_combine_and_compare`). Defaults ma
 original scripts; the old global `CONFIG` list is now just function arguments, so a stale
 copy in a notebook can no longer drift from the code.
 
+Ready-to-run versions of these steps are in `inst/examples/` (`00_install.R` … `05_housekeeping.R`).
+
 ## Output files (in `out_dir`)
 
 `<cohort>[_<subset_tag>]_<trait>_pgsmetrics.csv`, `..._pgsmetrics_cov.csv`,
@@ -74,11 +76,8 @@ copy in a notebook can no longer drift from the code.
 `<cohort>_pgs_metadata.csv`; plots under `plots/<cohort>[/<subset_tag>]/<trait>/` and
 `plots/<cohort>/population_comparisons/<trait>/`.
 
-## Publishing to GitHub
+## Where it lives
 
-```bash
-cd pgscompare
-git init -b main && git add . && git commit -m "Initial pgscompare package"
-git remote add origin https://github.com/YOUR-GITHUB-USER/pgscompare.git
-git push -u origin main
-```
+This package is the `pgscompare/` folder of
+[UW-GAC/primed_benchmarking](https://github.com/UW-GAC/primed_benchmarking), hence the
+`subdir = "pgscompare"` in the install command. To install a branch, add `ref = "<branch>"`.

@@ -389,9 +389,30 @@ run_one_chunk <- function(ctx, trait_name, group_name, chunk_idx, n_chunks, chun
   cat(sprintf("  %s chunk %d/%d (%d PGS, n=%d) starting at %s\n", group_name, chunk_idx, n_chunks,
               length(chunk_pgs), nrow(chunk_df), format(Sys.time())))
 
-  res <- pgsmetrics::pgsmetrics(chunk_df, pgs = chunk_pgs, dep = dep_col, covars = ctx$covariates,
-                                K = if (is_binary) K else NULL,
-                                n_boot = ctx$n_boot, n_cores = ctx$n_cores)
+  attach_pgsmetrics_deps()
+  call_pgsmetrics <- function(pgs, n_boot, n_cores) {
+    pgsmetrics::pgsmetrics(chunk_df, pgs = pgs, dep = dep_col, covars = ctx$covariates,
+                           K = if (is_binary) K else NULL, n_boot = n_boot, n_cores = n_cores)
+  }
+  # mclapply workers run silently, so a failure inside them only shows up as
+  # "all scheduled cores encountered errors in user code". Catch that warning and
+  # re-run a tiny serial job (n_cores = 1) so the REAL error message is shown.
+  res <- withCallingHandlers(
+    call_pgsmetrics(chunk_pgs, ctx$n_boot, ctx$n_cores),
+    warning = function(w) {
+      if (grepl("encountered errors in user code", conditionMessage(w), fixed = TRUE)) {
+        cat("\n*** pgsmetrics bootstrap workers failed; re-running 2 PGS serially to find the real error ***\n")
+        err <- tryCatch({ call_pgsmetrics(chunk_pgs[seq_len(min(2, length(chunk_pgs)))], 2, 1); NULL },
+                        error = function(e) e)
+        if (!is.null(err)) {
+          stop("pgsmetrics failed for ", trait_name, " (", group_name, " chunk ", chunk_idx,
+               "). Underlying error: ", conditionMessage(err), call. = FALSE)
+        }
+        stop("pgsmetrics bootstrap workers failed in parallel but a small serial run succeeded - ",
+             "most likely out of memory in the forked workers. Lower n_cores (try 1-2) and/or ",
+             "chunk_size, then rerun (finished chunks are cached).", call. = FALSE)
+      }
+    })
 
   or_predictions <- NULL
   if (is_binary) {
@@ -464,4 +485,16 @@ widen_metrics <- function(dt) {
   setnames(main_wide, value_cols, relabel_value_suffix(value_cols))
   setcolorder(main_wide, c("pgs", sort(setdiff(names(main_wide), "pgs"))))
   list(main = main_wide, cov = cov_wide)
+}
+
+# The original working scripts attached dplyr and pgsmetrics; some pgsmetrics code
+# paths may rely on that (e.g. in forked bootstrap workers), so attach them when
+# installed instead of assuming a clean search path.
+attach_pgsmetrics_deps <- function() {
+  for (pkg in c("dplyr", "pgsmetrics")) {
+    if (requireNamespace(pkg, quietly = TRUE) && !(paste0("package:", pkg) %in% search())) {
+      suppressPackageStartupMessages(attachNamespace(pkg))
+    }
+  }
+  invisible(NULL)
 }
