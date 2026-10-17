@@ -7,10 +7,14 @@
 #' evaluation x metric).
 #'
 #' @param pgs_ids character vector of PGS Catalog ids. If NULL they are read
-#'   from `pgs_metadata_path`.
+#'   from `pgs_metadata_path`, or, if that is NULL too, from the Terra data table
+#'   `pgs_model_table`.
 #' @param pgs_metadata_path CSV with a `pgs_id` column, typically
 #'   `<out_dir>/<cohort_name>_pgs_metadata.csv` written by
 #'   [run_combine_and_compare()].
+#' @param pgs_model_table,id_col Terra data table (and its column) holding the PGS
+#'   Catalog ids (values like "PGS000001"); used when neither `pgs_ids` nor
+#'   `pgs_metadata_path` is given. Defaults: `"pgs_model"` / `"pgs_model_id"`.
 #' @param trait optional trait name; when given, output files are prefixed
 #'   `<trait>_` (the naming [run_join_and_plot()] looks for first).
 #' @param out_dir where to write.
@@ -22,17 +26,27 @@
 #' @return Invisibly, list(score_metadata, performance).
 #' @export
 fetch_pgs_catalog_metadata <- function(
-    pgs_ids = NULL, pgs_metadata_path = NULL, trait = NULL,
+    pgs_ids = NULL, pgs_metadata_path = NULL,
+    pgs_model_table = "pgs_model", id_col = "pgs_model_id", trait = NULL,
     out_dir = "pgs_comparison_results",
     base_url = "https://www.pgscatalog.org/rest",
     majority_threshold = 0.5, request_delay = 0.34,
     bucket_dir = default_bucket_dir()) {
 
   if (is.null(pgs_ids)) {
-    if (is.null(pgs_metadata_path)) stop("Give `pgs_ids` or `pgs_metadata_path`.")
-    meta_in <- fread(pgs_metadata_path)
-    stopifnot("pgs_id" %in% names(meta_in))
-    pgs_ids <- meta_in$pgs_id
+    if (!is.null(pgs_metadata_path)) {
+      meta_in <- fread(pgs_metadata_path)
+      stopifnot("pgs_id" %in% names(meta_in))
+      pgs_ids <- meta_in$pgs_id
+    } else {
+      cat(sprintf("Reading PGS IDs from Terra data table '%s'\n", pgs_model_table))
+      tbl <- as.data.table(resolve_avtable()(pgs_model_table))
+      if (!(id_col %in% names(tbl))) {
+        stop(sprintf("Column '%s' not found in table '%s'. Columns present: %s",
+                     id_col, pgs_model_table, paste(names(tbl), collapse = ", ")))
+      }
+      pgs_ids <- tbl[[id_col]]
+    }
   }
   pgs_ids <- unique(as.character(pgs_ids))
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

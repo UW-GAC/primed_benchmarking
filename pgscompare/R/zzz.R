@@ -7,5 +7,6 @@ utils::globalVariables(c(
   "ci_lower_2", "ci_upper_2", "observed", "ci_lower", "ci_upper", "population", "color",
   "name_short", "publication", "estimate", "source", "predicted_prob", "actual_outcome",
   "IID", "outcome", "outcome_label", "match_rate_percent", "total_count", "count",
-  "pgs_individual_file_id", "score", "m"
+  "pgs_individual_file_id", "score", "m", "pgs_scoring_file_id", "match_flipped",
+  "match_flipped_bool", "match_status", "accession"
 ))

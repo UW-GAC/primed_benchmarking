@@ -48,6 +48,9 @@ run_combine_and_compare(
 fetch_pgs_catalog_metadata(
   pgs_metadata_path = "pgs_comparison_results/ARIC_pgs_metadata.csv", trait = "t2d")
 
+# 2b. Variant match rates (optional; feeds the match-rate plots)
+combine_pgs_match_summaries("ARIC")
+
 # 3. Join + all plots (add match rate file ARIC_t2d_match_rate.csv to the results folder/bucket)
 run_join_and_plot("ARIC")                          # full cohort
 run_join_and_plot("ARIC", subset_tag = "k1k4")     # a subset run
@@ -67,7 +70,7 @@ Every function documents its arguments (`?run_combine_and_compare`). Defaults ma
 original scripts; the old global `CONFIG` list is now just function arguments, so a stale
 copy in a notebook can no longer drift from the code.
 
-Ready-to-run versions of these steps are in `inst/examples/` (`00_install.R` … `05_housekeeping.R`).
+Ready-to-run versions of these steps are in `inst/examples/` (`00_install.R` … `06_match_summaries.R`). `inst/python/combine_pgs_summaries.py` is the original Python version of the match-summary step, kept for reference.
 
 ## Output files (in `out_dir`)
 

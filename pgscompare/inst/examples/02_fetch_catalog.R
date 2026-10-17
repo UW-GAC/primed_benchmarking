@@ -6,3 +6,6 @@ fetch_pgs_catalog_metadata(
   pgs_metadata_path = "pgs_comparison_results/ARIC_pgs_metadata.csv",  # from step 1
   trait = "t2d"
 )
+
+## Or, read the PGS ids straight from the Terra data table `pgs_model` (column pgs_model_id):
+# fetch_pgs_catalog_metadata(trait = "t2d")

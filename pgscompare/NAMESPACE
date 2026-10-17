@@ -1,6 +1,7 @@
 # Hand-written (no roxygen needed); keep in sync with R/ if you add exports.
 export(run_combine_and_compare)
 export(fetch_pgs_catalog_metadata)
+export(combine_pgs_match_summaries)
 export(run_join_and_plot)
 export(run_compare_populations)
 export(default_bucket_dir)

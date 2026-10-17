@@ -134,6 +134,14 @@ run_combine_and_compare <- function(
                 nrow(analysis_df), n_before, subset_ids_path))
   }
 
+  ## ---- make sure everything pgsmetrics needs is numeric ----
+  analysis_df <- check_analysis_types(
+    analysis_df,
+    pgs_cols   = setdiff(names(pgs_wide), "IID"),
+    covariates = covariates,
+    dep_cols   = c(binary_traits, continuous_traits),
+    binary_dep_cols = binary_traits)
+
   ## ---- run pgsmetrics ----
   ctx <- list(analysis_df = analysis_df, covariates = covariates, n_boot = n_boot,
               n_cores = n_cores, skip_existing = skip_existing, out_dir = out_dir,
@@ -497,4 +505,53 @@ attach_pgsmetrics_deps <- function() {
     }
   }
   invisible(NULL)
+}
+
+# pgsmetrics hands the data to compiled code that requires numeric columns; a
+# single character column (e.g. sex coded "Female"/"Male") fails with
+# "Not compatible with requested type: [type=character; target=double]" -
+# inside the workers, so it surfaces as a vague parallel-bootstrap error.
+# Check up front and say exactly which column is the problem.
+check_analysis_types <- function(df, pgs_cols, covariates, dep_cols, binary_dep_cols = NULL) {
+  df <- copy(df)
+  is_num <- function(x) is.numeric(x) || is.logical(x)
+
+  # score columns: coerce character -> numeric (e.g. "NA"/"nan" text), reporting NAs created
+  for (col in pgs_cols) {
+    if (!is_num(df[[col]])) {
+      before <- sum(is.na(df[[col]]))
+      set(df, j = col, value = suppressWarnings(as.numeric(as.character(df[[col]]))))
+      cat(sprintf("Note: score column '%s' was %s; coerced to numeric (%d new NA)\n",
+                  col, "non-numeric", sum(is.na(df[[col]])) - before))
+    }
+  }
+
+  # covariates and outcomes: don't guess a coding - stop and say what to fix
+  bad <- character(0)
+  for (col in unique(c(covariates, dep_cols))) {
+    x <- df[[col]]
+    if (is.logical(x)) { set(df, j = col, value = as.integer(x)); next }
+    if (!is.numeric(x)) {
+      vals <- utils::head(sort(unique(as.character(x[!is.na(x)]))), 5)
+      bad <- c(bad, sprintf("  - '%s' is %s (e.g. %s)", col, class(x)[1], paste(shQuote(vals), collapse = ", ")))
+    }
+  }
+  if (length(bad) > 0) {
+    stop("These covariate/outcome columns are not numeric, which pgsmetrics requires:\n",
+         paste(bad, collapse = "\n"),
+         "\nRecode them as numbers in the phenotype file (e.g. sex 0/1, binary outcomes 0/1) and rerun.",
+         call. = FALSE)
+  }
+
+  for (nm in names(binary_dep_cols)) {
+    col <- binary_dep_cols[[nm]]
+    vals <- unique(df[[col]][!is.na(df[[col]])])
+    if (!all(vals %in% c(0, 1))) {
+      warning(sprintf("Binary outcome '%s' (column '%s') has values other than 0/1: %s. Cases/controls ",
+                      nm, col, paste(utils::head(sort(vals), 5), collapse = ", ")),
+              "are assumed to be 1/0 for sample sizes and OR predictions; recode (e.g. 1/2 -> 0/1) if needed.",
+              call. = FALSE)
+    }
+  }
+  df
 }
