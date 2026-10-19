@@ -49,7 +49,7 @@ fetch_pgs_catalog_metadata(
   pgs_metadata_path = "pgs_comparison_results/ARIC_pgs_metadata.csv", trait = "t2d")
 
 # 2b. Variant match rates (optional; feeds the match-rate plots)
-combine_pgs_match_summaries("ARIC")
+combine_pgs_match_summaries("ARIC", sub_name = "t2d")   # -> ARIC_t2d_match_rate.csv
 
 # 3. Join + all plots (add match rate file ARIC_t2d_match_rate.csv to the results folder/bucket)
 run_join_and_plot("ARIC")                          # full cohort
